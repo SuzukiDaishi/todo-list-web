@@ -44,7 +44,7 @@ pages/index.vue
 ```html:pages/index.vue
 <template>
   <div>
-    <h1></h1>
+    <h1>Hello world</h1>
   </div>
 </template>
 
