@@ -4,7 +4,6 @@
       <div id="header-title">
         <h1>TODO LIST</h1>
       </div>
-      <div id="header-bottom"></div>
     </header>
   </div>
 </template>
