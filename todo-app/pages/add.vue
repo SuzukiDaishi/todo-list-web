@@ -9,13 +9,13 @@
             <div id="title">
                 <label>タイトル</label>
                 <br />
-                <input type="text" />
+                <input type="text" v-model="title"/>
             </div>
 
             <div id="content">
                 <label>詳細</label>
                 <br />
-                <textarea cols="50" rows="5" wrap="soft" />
+                <textarea cols="50" rows="5" wrap="soft" v-model="content"/>
             </div>
 
             <div class="button-wrapper">
@@ -43,8 +43,20 @@ export default {
         NanameHeader,
         NeonButton
     },
+    data() {
+        return  {
+            title: '',
+            content: ''
+        }
+    },
     methods: {
-        submit() {}
+        submit() {
+            this.$store.commit('addTodo', {
+                title: this.title, 
+                content: this.content
+            })
+            this.$router.push('/')
+        }
     }
 }
 </script>

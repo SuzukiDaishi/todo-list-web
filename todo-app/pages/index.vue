@@ -8,16 +8,17 @@
 
       <div id="header-space"></div>
 
-      <div class="item" v-for="item in todoList" :key="item.index">
+      <div class="item" v-for="item in $store.state.todoList" :key="item.index">
         <span>
           <span class="no-copy">- </span>{{item.title}}
         </span>
         <neon-button class="right" 
-                     :color="getGradation(item.index, todoList.length)">
+                     :color="getGradation(item.index, $store.state.todoList.length)"
+                     @click.native="$store.commit('deleteTodo', item.index)">
           <i class="fa fa-trash" ></i>削除
         </neon-button>
         <neon-button class="right" 
-                     :color="getGradation(item.index, todoList.length)"
+                     :color="getGradation(item.index, $store.state.todoList.length)"
                      @click.native="$router.push({ path: '/content', query: item })">
           <i class="fa fa-edit"></i>説明
         </neon-button>
@@ -51,27 +52,6 @@ export default {
       const baseLightness  = 50
       let hue = 360 / length * index + baseHue % 360
       return `hsl(${hue}, ${baseSaturation}%, ${baseLightness}%)`
-    }
-  },
-  data() {
-    return {
-      todoList: [
-        {
-          index: 0,
-          title: 'トイレットペーパー',
-          content: 'トイレのやつなくなってたので買ってくる(2まい)'
-        },
-        {
-          index: 1,
-          title: '醤油',
-          content: '今日の夜はエリンギを焼きたい'
-        },
-        {
-          index: 2,
-          title: 'TODOリスト作成',
-          content: 'これ作らねば...'
-        },
-      ]
     }
   }
 }
