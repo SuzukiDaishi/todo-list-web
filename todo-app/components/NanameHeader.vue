@@ -9,12 +9,15 @@
 <script>
 export default {
   props: {
+    /** タイトルを入力すると反映 */
     title: String
   }
 }
 </script>
 
 <style scoped>
+/** ヘッダーは斜めで縦にグラデーション */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap');
 header {
   position:fixed;
   width: 100vw;

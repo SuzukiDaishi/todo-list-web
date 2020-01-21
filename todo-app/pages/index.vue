@@ -1,7 +1,7 @@
 <template>
 
   <div class="wrapper">
-
+    
     <naname-header title="ToDo List" />
 
     <main>
@@ -12,16 +12,19 @@
         <span>
           <span class="no-copy">- </span>{{item.title}}
         </span>
-        <neon-button class="right" :color="getGradation(item.index, todoList.length)">
+        <neon-button class="right" 
+                     :color="getGradation(item.index, todoList.length)">
           <i class="fa fa-trash" ></i>削除
         </neon-button>
-        <neon-button class="right" :color="getGradation(item.index, todoList.length)">
+        <neon-button class="right" 
+                     :color="getGradation(item.index, todoList.length)"
+                     @click.native="$router.push({ path: '/content', query: item })">
           <i class="fa fa-edit"></i>説明
         </neon-button>
       </div>
 
       <div class="item center">
-        <neon-button>
+        <neon-button @click.native="$router.push('/add')">
           <i class="fa fa-plus-square"></i>追加
         </neon-button>
       </div>
@@ -56,17 +59,17 @@ export default {
         {
           index: 0,
           title: 'トイレットペーパー',
-          content: ''
+          content: 'トイレのやつなくなってたので買ってくる(2まい)'
         },
         {
           index: 1,
           title: '醤油',
-          content: ''
+          content: '今日の夜はエリンギを焼きたい'
         },
         {
           index: 2,
           title: 'TODOリスト作成',
-          content: ''
+          content: 'これ作らねば...'
         },
       ]
     }
@@ -75,8 +78,6 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap');
-
 .wrapper {
   width: 100vw;
   height: 100vh;

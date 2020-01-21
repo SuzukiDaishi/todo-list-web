@@ -1,5 +1,6 @@
 <template>
-    <button class="kakkoii-button" :style="{'--color': this.color}">
+    <button class="kakkoii-button" 
+            :style="{'--color': this.color}">
         <slot />
     </button>
 </template>

@@ -8,7 +8,6 @@
   - TODOメモ
     - タイトル
     - 詳細
-    - 時間
   - TODOの一覧表示
 - ページ
   - TODOリスト
@@ -17,11 +16,12 @@
 - 構成
   - フロントエンド
     - Nuxt
-  - バックエンド
-    - Node.js
-    - Express
-  - データベース
-    - SQLite
+  - 今回は実装しないがこのまま作るとしたら
+    - バックエンド
+      - Node.js
+      - Express
+    - データベース
+      - SQLite
 - 使用環境
   - PC
   - Chrome
@@ -44,7 +44,7 @@ npm run dev
 これでサーバが起動したと思います。
 次にCSSをリセットしてハロワしたいと思います。
 
-pages/index.vue
+### pages/index.vue
 
 ```html:pages/index.vue
 <template>
@@ -62,7 +62,7 @@ export default {
 </style>
 ```
 
-layouts/default.vue
+### layouts/default.vue
 
 ```html:layouts/default.vue
 <template>
@@ -73,10 +73,11 @@ layouts/default.vue
 
 <style>
 @import '@/assets/css/reset.css';
+@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 </style>
 ```
 
-assets/css/reset.css
+### assets/css/reset.css
 
 ```css:assets/css/reset.css
 /* http://meyerweb.com/eric/tools/css/reset/
@@ -129,8 +130,367 @@ table {
 }
 ```
 
-## 参考にしたページ
+これでハローワールドできました
 
-[可愛くてメランコリック？夢見る女子にぴったりな「ゆめかわいい」配色パターン10選](https://t1200.jp/blog/design/design_tips/8905.html)
+### components/NanameHeader.vue
 
-[おすすめリセットCSS 5選 2019年版 【コピペで使える】](http://shiru-web.com/2017/04/21/01-26/)
+```html
+<template>
+
+  <div class="wrapper">
+    
+    <naname-header title="ToDo List" />
+
+    <main>
+
+      <div id="header-space"></div>
+
+      <div class="item" v-for="item in todoList" :key="item.index">
+        <span>
+          <span class="no-copy">- </span>{{item.title}}
+        </span>
+        <neon-button class="right" 
+                     :color="getGradation(item.index, todoList.length)">
+          <i class="fa fa-trash" ></i>削除
+        </neon-button>
+        <neon-button class="right" 
+                     :color="getGradation(item.index, todoList.length)"
+                     @click.native="$router.push({ path: '/content', query: item })">
+          <i class="fa fa-edit"></i>説明
+        </neon-button>
+      </div>
+
+      <div class="item center">
+        <neon-button @click.native="$router.push('/add')">
+          <i class="fa fa-plus-square"></i>追加
+        </neon-button>
+      </div>
+
+    </main>
+
+  </div>
+  
+</template>
+
+<script>
+import NeonButton from '~/components/NeonButton.vue'
+import NanameHeader from '~/components/NanameHeader.vue'
+
+export default {
+  components: {
+    NeonButton,
+    NanameHeader
+  },
+  methods: {
+    getGradation(index, length) {
+      const baseHue        = 307
+      const baseSaturation = 100
+      const baseLightness  = 50
+      let hue = 360 / length * index + baseHue % 360
+      return `hsl(${hue}, ${baseSaturation}%, ${baseLightness}%)`
+    }
+  },
+  data() {
+    return {
+      todoList: [
+        {
+          index: 0,
+          title: 'トイレットペーパー',
+          content: 'トイレのやつなくなってたので買ってくる(2まい)'
+        },
+        {
+          index: 1,
+          title: '醤油',
+          content: '今日の夜はエリンギを焼きたい'
+        },
+        {
+          index: 2,
+          title: 'TODOリスト作成',
+          content: 'これ作らねば...'
+        },
+      ]
+    }
+  }
+}
+</script>
+
+<style>
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+}
+
+html, body {
+  overscroll-behavior: none;
+  background: #222222;
+}
+
+main {
+  overflow-y: scroll;
+  color: white;
+}
+
+#header-space {
+  max-height: 300px;
+  height: 20vh;
+}
+
+.item {
+  margin: 0 auto;
+  margin-top: 1vh;
+  width: 80vw;
+  height: 10vh;
+  font-size: 2em;
+}
+
+.item>span {
+  width: 70vw;
+}
+
+.right {
+  float: right;
+  margin-right: 2vw;
+}
+
+.no-copy {
+  user-select: none;
+}
+
+.center {
+  text-align: center;
+}
+</style>
+```
+
+これでクールでかっこいいToDoListが完成しました
+他のページも作っていきます。
+
+### pages/add.vue
+
+```html
+<template>
+    <div class="wrapper">
+        <naname-header title="ToDo List"/>
+
+        <div id="header-space"></div>
+
+        <form @submit.prevent>
+
+            <div id="title">
+                <label>タイトル</label>
+                <br />
+                <input type="text" />
+            </div>
+
+            <div id="content">
+                <label>詳細</label>
+                <br />
+                <textarea cols="50" rows="5" wrap="soft" />
+            </div>
+
+            <div class="button-wrapper">
+                <neon-button color="hsl(187,100%,50%)"
+                             @click.native="$router.push('/')">
+                    戻る
+                </neon-button>
+                <neon-button type="submit" 
+                             @click.native="submit">
+                    確定
+                </neon-button>
+            </div>
+
+        </form>
+
+    </div>
+</template>
+
+<script>
+import NanameHeader from '~/components/NanameHeader.vue'
+import NeonButton from '~/components/NeonButton.vue'
+
+export default {
+    components: {
+        NanameHeader,
+        NeonButton
+    },
+    methods: {
+        submit() {}
+    }
+}
+</script>
+
+<style>
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+}
+
+html, body {
+  overscroll-behavior: none;
+  background: #222222;
+}
+
+#header-space {
+  max-height: 300px;
+  height: 20vh;
+}
+
+form {
+    color: white;
+}
+
+#title {
+    width: 100%;
+    padding-left: 30%;
+    margin-top: 20px;
+    font-size: 1.8em;
+}
+
+#title>input[type="text"] {
+    width: 40%;
+    margin-top: 10px;
+    font-size: 80%;
+}
+
+#content {
+    width: 100%;
+    padding-left: 30%;
+    margin-top: 20px;
+    font-size: 1.8em;
+}
+
+#content>textarea {
+    width: 40%;
+    margin-top: 10px;
+    font-size: 80%;
+    height: 4.5em;
+    resize: none;
+}
+
+.button-wrapper {
+    width: 100%;
+    font-size: 1.8em;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button-wrapper>:first-child {
+    margin-right: 40px;
+}
+
+</style>
+```
+
+### pages/content.vue
+
+```html
+<template>
+    <div class="wrapper">
+        <naname-header title="ToDo List"/>
+
+        <div id="header-space"></div>
+
+        <div id="content-box">
+
+            <div id="title">
+                <label>タイトル</label>
+                <br />
+                <input type="text" readonly :value="$route.query.title"/>
+            </div>
+
+            <div id="content">
+                <label>詳細</label>
+                <br />
+                <textarea cols="50" rows="5" wrap="soft" readonly
+                          :value="$route.query.content"/>
+            </div>
+
+            <div class="button-wrapper">
+                <neon-button color="hsl(187,100%,50%)"
+                             @click.native="$router.push('/')">
+                    戻る
+                </neon-button>
+            </div>
+
+        </div>
+
+    </div>
+</template>
+
+<script>
+import NanameHeader from '~/components/NanameHeader.vue'
+import NeonButton from '~/components/NeonButton.vue'
+
+export default {
+    components: {
+        NanameHeader,
+        NeonButton
+    },
+    methods: {
+        submit() {}
+    }
+}
+</script>
+
+<style>
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+}
+
+html, body {
+  overscroll-behavior: none;
+  background: #222222;
+}
+
+#header-space {
+  max-height: 300px;
+  height: 20vh;
+}
+
+#content-box {
+    color: white;
+}
+
+#title {
+    width: 100%;
+    padding-left: 30%;
+    margin-top: 20px;
+    font-size: 1.8em;
+}
+
+#title>input[type="text"] {
+    width: 40%;
+    margin-top: 10px;
+    font-size: 80%;
+}
+
+#content {
+    width: 100%;
+    padding-left: 30%;
+    margin-top: 20px;
+    font-size: 1.8em;
+}
+
+#content>textarea {
+    width: 40%;
+    margin-top: 10px;
+    font-size: 80%;
+    height: 4.5em;
+    resize: none;
+}
+
+.button-wrapper {
+    width: 100%;
+    font-size: 1.8em;
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+</style>
+```
+
+ここまでできればページは全て実装完了です
+後は機能を実装すれば完成です。
+
